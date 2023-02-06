@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2: Coding Basics"
-author: "Student Name"
+author: "John Fay"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -31,12 +31,19 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r}
-#1. 
+#1. Generate sequence...
+my_seq <- seq(1,100,4)
 
-#2. 
+#2. Compute mean & median
+the_mean <- mean(my_seq)
+the_median <- median(my_seq)
 
-#3. 
-
+#3. Determine equality between mean and median
+if (the_mean == the_median){
+  print("The mean and median are the same")
+} else {
+    print("The mean and median are different")
+}
 ```
 
 ## Basics Day 2
@@ -50,7 +57,19 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 8.  Label the columns of your data frame with informative titles.
 
 ```{r}
+#5. Create vectors (6. with labels)
+the_names <- c('Aleph','Beta','Gamma','Delta') #chr  (character)
+the_scores <- c(34,55,45,66)                   #num  (integer)
+the_grade <- c(F,T,F,T)                        #logi (Boolean)
 
+#7. Combine vectors into a dataframe
+#Method 1
+the_df <- data.frame(the_names, the_scores, the_grade)
+#Method 2
+the_df2 <- as.data.frame(cbind(the_names, the_scores, the_grade))
+
+#8. Label the columns
+names(the_df) = c("student","score","grade")
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
@@ -62,7 +81,16 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r}
+#10. Create a function to compute a vector of P/F from a vector of scores
+compute_passfail <- function(scores){
+  the_result <- ifelse(scores > 50,"Pass","Fail")
+  print(the_result)
+}
 
+#11. Apply the function
+compute_passfail(the_df$score)
+# -or-
+ifelse(the_df$score > 50,"Pass","Fail")
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
