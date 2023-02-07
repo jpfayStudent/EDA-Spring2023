@@ -94,19 +94,31 @@ Question: In the R chunk below, write "dataframe1\$". Press `tab` after you type
 Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North Carolina. Create two vectors, one representing the high temperature on each of the ten days and one representing the low.
 
 ```{r DataExercise-1a}
-
+highsF <- c(64,71,72,63,51,52,61,54,67,73)
+lowsF <- c(42,49,60,46,42,42,41,47,52,54)
 ```
 
 Now, create two additional vectors that include the ten-day forecast for the high and low temperatures in Celsius. Use a function to create the two new vectors from your existing ones in Fahrenheit.
 
 ```{r DataExercise-1b}
+f2c <- function(F){
+  C <- round(((F-32)*5/9),2)
+  return(C)
+  }
+highsC <- f2c(highsF)
+lowsC <- f2c(lowsF)
 
 ```
 
 Combine your four vectors into a data frame and add informative column names.
 
 ```{r DataExercise-1c}
-
+df_Temps <- data_frame(
+  highs_F = highsF,
+  highs_C = highsC,
+  lows_F = lowsF,
+  lows_C = lowsC
+)
 ```
 
 Use the common functions `summary` and `sd` to obtain basic data summaries of the ten-day forecast. How would you call these functions differently for the entire data frame vs. a single column? Attempt to demonstrate both options below.
@@ -128,9 +140,9 @@ Remember formatting of dates in R:
 # (code must be uncommented)
 today <- Sys.Date()
 format(today, format = "%B")
-#format(today, format = "")
-#format(today, format = "")
-#format(today, format = "")
+format(today, format = "%m")
+format(today, format = "%Y")
+format(today, format = "%y")
 
 ```
 
@@ -159,8 +171,8 @@ date_obj_today
 #Ex_3 - on your own...
 str_juneteenth <- "19 June 1865"
 #Since the format is month-day-year we will use function mdy()
-#date_juneteenth <- ()
-#date_juneteenth
+date_juneteenth <- dmy(str_juneteenth)
+date_juneteenth
 ```
 
 ```{r DateExercise2}
