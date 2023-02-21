@@ -93,21 +93,47 @@ Say we want to plot the number of records each month in the Peter/Paul lakes dat
 
 ```{r Plot the number of records by month}
 #What kind of values are months?
+class(PeterPaul.chem.nutrients$month)
 
 #List unique values
+unique(PeterPaul.chem.nutrients$month)
 
 #Plot how many Lake observations occur each month
+ggplot(PeterPaul.chem.nutrients, aes(x=month)) +
+geom_bar() 
 
 #Convert month to a factor -- with 12 levels, labelled with month names
+factor(PeterPaul.chem.nutrients$month,
+       levels=1:12,
+       labels=month.abb)
 
 #Try again: Plot how many Lake observations occur each month
+ggplot(PeterPaul.chem.nutrients,aes(x=factor(month,levels=1:12,labels=month.abb))) +
+geom_bar() 
 
 #Alter to include missing months
+ggplot(PeterPaul.chem.nutrients,aes(x=factor(month,levels=1:12,labels=month.abb))) +
+geom_bar() + 
+scale_x_discrete(name="month",drop=FALSE)
 
 #Tidy up the code
+the_plot <- PeterPaul.chem.nutrients %>% 
+  ggplot(
+    aes(x=factor(
+      month,
+      levels=1:12,
+      labels=month.abb)
+      )
+    ) +
+geom_bar() + 
+scale_x_discrete(
+  name="Month",
+  drop=FALSE
+  ) 
+#Show the plot, in the light theme
+the_plot + theme_light()
 
 ```
-
 
 ---
 
@@ -228,7 +254,21 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Plot surface temperatures by day of  year. 
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
-
+PeterPaul.chem.nutrients %>% 
+  filter(depth==0) %>% 
+  ggplot(aes(
+    y=temperature_C,
+    x=daynum,
+    color=year4)
+    ) + 
+  geom_point(size=0.5,alpha=0.5) + 
+  facet_wrap(vars(lakename)) + 
+  labs(
+    title = "Surface Temperature vs Day of Year by Year",
+    y = "Surface Temperature (°C)",
+    x = "Day of Year",
+    color = "Year"
+  )
 
 #2. 
 # Plot temperature by date. Color your points by depth.
@@ -236,6 +276,27 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
 
+PeterPaul.chem.nutrients %>% 
+ggplot() +
+  geom_point(
+    aes(
+      x=sampledate,
+      y=temperature_C,
+      color=depth
+      ),
+    size=0.5) +
+  scale_color_viridis(
+    option='magma',
+    direction = -1) + 
+  scale_x_date(
+    date_breaks = "5 years", 
+    date_labels='%Y') + 
+  labs(
+    title = "Temperature by Date across Depths",
+    y = "Temperature (°C)",
+    x = "Date of sample",
+    color = "Depth"
+  )
 
 
 ```
@@ -250,8 +311,17 @@ Exercise: Plot relationships between air quality measurements
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
 
-
-
+EPAair %>% 
+  ggplot(aes(x=PM2.5, y=Ozone,color=mean_Lat)) + 
+  geom_point(alpha=0.5) + 
+  geom_smooth(
+    method='lm',
+    se=FALSE,
+    color='Red') + 
+  scale_color_viridis(
+    name='Latitude',
+    option ='viridis',
+    alpha = 0.5)
 
 ```
 
@@ -265,7 +335,19 @@ Exercise: Plot distributions of AQI values for EPAair.
 # Create several types of plots depicting PM2.5, divided by year. 
 # Choose which plot displays the data best and justify your choice. 
 
+base_plot <- EPAair %>% 
+  ggplot(aes(y=PM2.5,x=as.factor(Year),color=as.factor(Year)))
 
+base_plot + geom_boxplot() + labs(x='Year',color='Year') 
+
+base_plot + geom_violin() + labs(x='Year',color='Year')
+
+base_plot + 
+  geom_dotplot(binaxis = "y", 
+               binwidth = 1, 
+               stackdir = "center", 
+               position = "dodge", 
+               dotsize = 0.5) + labs(x='Year',color='Year')
 
 ```
 
@@ -284,6 +366,27 @@ Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
 ggplot(Neonics) +
   geom_bar(aes(x = Endpoint))
 
+#Using reorder
+ggplot(Neonics,aes(x=reorder(Endpoint, Endpoint, function(x) 1-length(x)))) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle=90))+
+  labs(x='Endpoint') + 
+  theme(
+    axis.text.x = element_text(
+      angle = 90, 
+      vjust = 0.5, 
+      hjust=1)
+  )
 
+#Using forcats
+ggplot(Neonics,aes(x = fct_infreq(Endpoint))) +
+  geom_bar(stat='count') +
+  labs(x='Endpoint') +
+  theme(
+    axis.text.x = element_text(
+      angle = 90, 
+      vjust = 0.5, 
+      hjust=1)
+  ) 
 
 ```
