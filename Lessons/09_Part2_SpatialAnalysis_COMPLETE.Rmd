@@ -485,9 +485,13 @@ mapView(counties_sf[resultMask,])
 
 ```{r Select counties within a 30 km area from the site}
 the_site_counties <- theSite_sfc_transformed %>% 
-  st_buffer(.,dist=30000)
+  st_buffer(.,dist=30000) 
 
+counties_3k <- counties_sf_utm %>% 
+  st_filter(the_site_counties)
 
+mapview(counties_3k) + 
+  mapview(the_site_counties,col.regions='red',alpha=0.1)
                             
 ```
 
