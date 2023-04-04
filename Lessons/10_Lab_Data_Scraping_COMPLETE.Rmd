@@ -282,7 +282,7 @@ scrape.it <- function(the_year){
 df2017 <- scrape.it(2017)
 
 # Map the function to scrape data from 2017 to 2019
-df_years <- seq(2015,2021) %>% 
+df_years <- seq(2017,2019) %>% 
   map(scrape.it) %>% 
   bind_rows()
 
